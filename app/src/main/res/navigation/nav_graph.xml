@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/attendanceFragment">
+
+    <fragment
+        android:id="@+id/attendanceFragment"
+        android:name="com.attendance.app.presentation.fragment.AttendanceFragment"
+        android:label="@string/tab_attendance"
+        tools:layout="@layout/fragment_attendance" />
+
+    <fragment
+        android:id="@+id/addStudentFragment"
+        android:name="com.attendance.app.presentation.fragment.AddStudentFragment"
+        android:label="@string/tab_add_student"
+        tools:layout="@layout/fragment_add_student" />
+
+    <fragment
+        android:id="@+id/manageFragment"
+        android:name="com.attendance.app.presentation.fragment.ManageFragment"
+        android:label="@string/tab_manage"
+        tools:layout="@layout/fragment_manage" />
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.attendance.app.presentation.fragment.HistoryFragment"
+        android:label="@string/tab_history"
+        tools:layout="@layout/fragment_history" />
+
+</navigation>

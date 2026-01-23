@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/attendanceFragment"
+        android:icon="@drawable/ic_attendance"
+        android:title="Điểm danh" />
+
+    <item
+        android:id="@+id/addStudentFragment"
+        android:icon="@drawable/ic_add_student"
+        android:title="Thêm HS" />
+
+    <item
+        android:id="@+id/manageFragment"
+        android:icon="@drawable/ic_manage"
+        android:title="Quản lý" />
+
+    <item
+        android:id="@+id/historyFragment"
+        android:icon="@drawable/ic_history"
+        android:title="Lịch sử" />
+</menu>

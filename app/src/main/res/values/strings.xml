@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Điểm danh</string>
+
+    <!-- Tab titles -->
+    <string name="tab_attendance">Điểm danh</string>
+    <string name="tab_add_student">Thêm HS</string>
+    <string name="tab_manage">Quản lý</string>
+    <string name="tab_history">Lịch sử</string>
+
+    <!-- Buttons -->
+    <string name="btn_start_camera">Bật Camera</string>
+    <string name="btn_stop_camera">Tắt Camera</string>
+    <string name="btn_start_recognition">Bắt đầu điểm danh</string>
+    <string name="btn_stop_recognition">Dừng điểm danh</string>
+    <string name="btn_capture">Chụp ảnh</string>
+    <string name="btn_save">Lưu học sinh</string>
+    <string name="btn_export_csv">Xuất CSV</string>
+    <string name="btn_delete">Xóa</string>
+    <string name="btn_clear_all">Xóa toàn bộ</string>
+
+    <!-- Labels -->
+    <string name="label_student_id">Mã học sinh</string>
+    <string name="label_student_name">Họ và tên</string>
+    <string name="label_student_class">Lớp</string>
+    <string name="label_total_students">Học sinh</string>
+    <string name="label_today_attendance">Đã điểm danh</string>
+    <string name="label_recognition_duration">Thời gian điểm danh (phút)</string>
+
+    <!-- Messages -->
+    <string name="msg_camera_started">✓ Camera đã bật thành công</string>
+    <string name="msg_photo_captured">✓ Đã chụp ảnh thành công</string>
+    <string name="msg_student_saved">✓ Đã thêm học sinh: %s</string>
+    <string name="msg_attendance_marked">✅ Điểm danh thành công: %s</string>
+    <string name="msg_already_marked">%s đã điểm danh hôm nay rồi</string>
+    <string name="msg_no_face_detected">Không tìm thấy khuôn mặt</string>
+    <string name="msg_face_not_recognized">Không nhận diện được học sinh</string>
+    <string name="msg_fill_all_fields">Vui lòng điền đầy đủ thông tin</string>
+    <string name="msg_take_photo_first">Vui lòng chụp ảnh học sinh</string>
+    <string name="msg_csv_exported">✓ Đã xuất file CSV thành công</string>
+
+    <!-- Permissions -->
+    <string name="permission_camera_rationale">Ứng dụng cần quyền truy cập camera để chụp ảnh và điểm danh</string>
+    <string name="permission_storage_rationale">Ứng dụng cần quyền lưu trữ để xuất file CSV</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_delete_student_title">Xóa học sinh</string>
+    <string name="dialog_delete_student_message">Bạn có chắc muốn xóa học sinh này?</string>
+    <string name="dialog_clear_all_title">⚠️ Cảnh báo</string>
+    <string name="dialog_clear_all_message">Bạn có chắc muốn xóa TOÀN BỘ dữ liệu?\n\nĐiều này sẽ xóa:\n- Tất cả học sinh\n- Tất cả lịch sử điểm danh\n\nHành động này KHÔNG THỂ hoàn tác!</string>
+    <string name="dialog_yes">Có</string>
+    <string name="dialog_no">Không</string>
+    <string name="dialog_cancel">Hủy</string>
+</resources>

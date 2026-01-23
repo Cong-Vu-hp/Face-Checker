@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Hệ thống Điểm danh Offline</title>
+    
+    <!-- Face-api.js for face recognition -->
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            font-size: 14px;
+            transition: all 0.3s;
+            color: #495057;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #video, #video2, .preview-image {
+            width: 100%;
+            display: block;
+            transform: scaleX(-1);
+            -webkit-transform: scaleX(-1);
+        }
+
+        #overlayCanvas {
+            transform: scaleX(-1);
+            -webkit-transform: scaleX(-1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .btn-flip {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 10;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .student-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .student-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .student-info {
+            flex: 1;
+        }
+
+        .student-name {
+            font-weight: bold;
+            color: #212529;
+            margin-bottom: 5px;
+        }
+
+        .student-id {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .btn-delete {
+            padding: 8px 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: left;
+            font-weight: 600;
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .attendance-record {
+            padding: 12px;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .attendance-time {
+            color: #6c757d;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        #recognitionStatus {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: none;
+            z-index: 100;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .tab {
+                font-size: 12px;
+                padding: 12px 5px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Hệ thống Điểm danh</h1>
+            <p>Nhận diện khuôn mặt - Offline</p>
+            <span class="badge">💾 Lưu trữ cục bộ</span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('attendance')">Điểm danh</button>
+            <button class="tab" onclick="switchTab('addStudent')">Thêm HS</button>
+            <button class="tab" onclick="switchTab('manage')">Quản lý</button>
+            <button class="tab" onclick="switchTab('history')">Lịch sử</button>
+        </div>
+
+        <div class="content">
+            <!-- Tab Điểm danh -->
+            <div id="attendance" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalStudents">0</div>
+                        <div class="stat-label">Học sinh</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todayAttendance">0</div>
+                        <div class="stat-label">Đã điểm danh</div>
+                    </div>
+                </div>
+                <div class="camera-container" style="position: relative;">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="overlayCanvas" style="position: absolute; top: 0; left: 0; pointer-events: none;"></canvas>
+                    <button class="btn-flip" onclick="flipCamera()" title="Chuyển camera">🔄</button>
+                    <div id="recognitionStatus"></div>
+                </div>
+                <div id="attendanceStatus"></div>
+                <button class="btn btn-primary" onclick="startCamera()">Bật Camera</button>
+                <button class="btn btn-success" id="realtimeBtn" onclick="toggleRealtimeRecognition()">🚀 Bật nhận diện liên tục</button>
+                <button class="btn btn-warning" onclick="exportToCSV()">Xuất CSV</button>
+            </div>
+
+            <!-- Tab Thêm học sinh -->
+            <div id="addStudent" class="tab-content">
+                <div class="camera-container">
+                    <video id="video2" autoplay playsinline></video>
+                    <canvas id="canvas2" style="display:none;"></canvas>
+                    <img id="capturedImage" class="preview-image" style="display:none;">
+                    <button class="btn-flip" onclick="flipCamera2()" title="Chuyển camera">🔄</button>
+                </div>
+                <div id="addStudentStatus"></div>
+                <div class="form-group">
+                    <label>Mã học sinh</label>
+                    <input type="text" id="studentId" placeholder="Nhập mã học sinh">
+                </div>
+                <div class="form-group">
+                    <label>Họ và tên</label>
+                    <input type="text" id="studentName" placeholder="Nhập họ và tên">
+                </div>
+                <div class="form-group">
+                    <label>Lớp</label>
+                    <input type="text" id="studentClass" placeholder="Nhập lớp">
+                </div>
+                <button class="btn btn-primary" onclick="startCamera2()">Bật Camera</button>
+                <button class="btn btn-warning" onclick="capturePhoto()">Chụp ảnh</button>
+                <button class="btn btn-success" onclick="saveStudent()">Lưu học sinh</button>
+            </div>
+
+            <!-- Tab Quản lý -->
+            <div id="manage" class="tab-content">
+                <h3 style="margin-bottom: 15px;">Danh sách học sinh</h3>
+                <button class="btn btn-danger" onclick="clearAllData()" style="margin-bottom: 15px;">🗑️ Xóa toàn bộ dữ liệu</button>
+                <div class="student-list" id="studentList"></div>
+            </div>
+
+            <!-- Tab Lịch sử -->
+            <div id="history" class="tab-content">
+                <h3 style="margin-bottom: 15px;">Lịch sử điểm danh hôm nay</h3>
+                <button class="btn btn-warning" onclick="exportToCSV()" style="margin-bottom: 15px;">Xuất CSV</button>
+                <div id="attendanceHistory"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let videoStream = null;
+        let videoStream2 = null;
+        let currentFacingMode = 'user';
+        let currentFacingMode2 = 'user';
+        let capturedImageData = null;
+        let faceApiModelsLoaded = false;
+        let isRecognizing = false;
+        let realtimeRecognition = false;
+        let recognitionInterval = null;
+        let lastRecognizedStudent = null;
+        let lastRecognitionTime = 0;
+
+        // Database functions
+        const DB = {
+            getStudents() {
+                const data = localStorage.getItem('students');
+                return data ? JSON.parse(data) : {};
+            },
+            
+            saveStudents(students) {
+                localStorage.setItem('students', JSON.stringify(students));
+            },
+            
+            getAttendance() {
+                const data = localStorage.getItem('attendance');
+                return data ? JSON.parse(data) : [];
+            },
+            
+            saveAttendance(attendance) {
+                localStorage.setItem('attendance', JSON.stringify(attendance));
+            },
+            
+            getFaceDescriptors() {
+                const data = localStorage.getItem('faceDescriptors');
+                return data ? JSON.parse(data) : {};
+            },
+            
+            saveFaceDescriptors(descriptors) {
+                localStorage.setItem('faceDescriptors', JSON.stringify(descriptors));
+            }
+        };
+
+        // Load face-api.js models
+        async function loadFaceApiModels() {
+            if (faceApiModelsLoaded) return true;
+            
+            showLoading('Đang tải mô hình AI nhận diện khuôn mặt...');
+            
+            try {
+                const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/';
+                
+                await Promise.all([
+                    faceApi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+                    faceApi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+                    faceApi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+                ]);
+                
+                faceApiModelsLoaded = true;
+                hideLoading();
+                return true;
+            } catch (error) {
+                console.error('Error loading face-api models:', error);
+                hideLoading();
+                alert('Không thể tải mô hình AI. Vui lòng kiểm tra kết nối internet và thử lại.');
+                return false;
+            }
+        }
+
+        function showLoading(message) {
+            const loadingHtml = `
+                <div id="loadingOverlay" class="loading-overlay">
+                    <div class="loading-content">
+                        <div class="spinner"></div>
+                        <p style="color: #667eea; font-weight: bold;">${message}</p>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', loadingHtml);
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.remove();
+        }
+
+        async function getFaceDescriptor(imageElement) {
+            const detection = await faceApi
+                .detectSingleFace(imageElement, new faceApi.TinyFaceDetectorOptions())
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+            
+            return detection ? detection.descriptor : null;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            // Stop realtime recognition when switching tabs
+            if (realtimeRecognition && tabName !== 'attendance') {
+                toggleRealtimeRecognition();
+            }
+
+            if (tabName === 'manage') {
+                loadStudentList();
+            } else if (tabName === 'history') {
+                loadAttendanceHistory();
+            } else if (tabName === 'attendance') {
+                updateStats();
+            }
+        }
+
+        async function startCamera() {
+            try {
+                if (videoStream) {
+                    videoStream.getTracks().forEach(track => track.stop());
+                }
+                
+                const constraints = {
+                    video: {
+                        facingMode: currentFacingMode,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                };
+                
+                videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+                const videoElement = document.getElementById('video');
+                videoElement.srcObject = videoStream;
+                
+                await videoElement.play();
+                
+                videoElement.addEventListener('loadedmetadata', () => {
+                    const canvas = document.getElementById('overlayCanvas');
+                    if (canvas) {
+                        canvas.width = videoElement.videoWidth;
+                        canvas.height = videoElement.videoHeight;
+                    }
+                });
+                
+                showStatus('attendanceStatus', '✓ Camera đã bật thành công', 'success');
+            } catch (error) {
+                console.error('Camera error:', error);
+                showStatus('attendanceStatus', 'Không thể truy cập camera: ' + error.message, 'error');
+            }
+        }
+
+        async function startCamera2() {
+            try {
+                if (videoStream2) {
+                    videoStream2.getTracks().forEach(track => track.stop());
+                }
+                
+                const constraints = {
+                    video: {
+                        facingMode: currentFacingMode2,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                };
+                
+                videoStream2 = await navigator.mediaDevices.getUserMedia(constraints);
+                const videoElement = document.getElementById('video2');
+                videoElement.srcObject = videoStream2;
+                videoElement.style.display = 'block';
+                
+                await videoElement.play();
+                
+                document.getElementById('capturedImage').style.display = 'none';
+                showStatus('addStudentStatus', '✓ Camera đã bật thành công', 'success');
+            } catch (error) {
+                console.error('Camera error:', error);
+                showStatus('addStudentStatus', 'Không thể truy cập camera: ' + error.message, 'error');
+            }
+        }
+
+        async function flipCamera() {
+            currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+            await startCamera();
+        }
+
+        async function flipCamera2() {
+            currentFacingMode2 = currentFacingMode2 === 'user' ? 'environment' : 'user';
+            await startCamera2();
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('video2');
+            const canvas = document.getElementById('canvas2');
+            const context = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            context.translate(canvas.width, 0);
+            context.scale(-1, 1);
+            context.drawImage(video, 0, 0);
+            context.setTransform(1, 0, 0, 1, 0, 0);
+
+            capturedImageData = canvas.toDataURL('image/jpeg', 0.8);
+            
+            document.getElementById('capturedImage').src = capturedImageData;
+            document.getElementById('capturedImage').style.display = 'block';
+            document.getElementById('video2').style.display = 'none';
+            
+            showStatus('addStudentStatus', '✓ Đã chụp ảnh thành công', 'success');
+        }
+
+        async function saveStudent() {
+            const studentId = document.getElementById('studentId').value.trim();
+            const studentName = document.getElementById('studentName').value.trim();
+            const studentClass = document.getElementById('studentClass').value.trim();
+
+            if (!studentId || !studentName || !studentClass) {
+                showStatus('addStudentStatus', 'Vui lòng điền đầy đủ thông tin', 'error');
+                return;
+            }
+
+            if (!capturedImageData) {
+                showStatus('addStudentStatus', 'Vui lòng chụp ảnh học sinh', 'error');
+                return;
+            }
+
+            const students = DB.getStudents();
+
+            if (students[studentId]) {
+                showStatus('addStudentStatus', 'Mã học sinh đã tồn tại', 'error');
+                return;
+            }
+
+            if (!faceApiModelsLoaded) {
+                const loaded = await loadFaceApiModels();
+                if (!loaded) return;
+            }
+
+            showLoading('Đang xử lý khuôn mặt...');
+
+            try {
+                const img = new Image();
+                img.src = capturedImageData;
+                
+                await new Promise((resolve) => {
+                    img.onload = resolve;
+                });
+
+                const descriptor = await getFaceDescriptor(img);
+
+                if (!descriptor) {
+                    hideLoading();
+                    showStatus('addStudentStatus', 'Không tìm thấy khuôn mặt trong ảnh. Vui lòng chụp lại.', 'error');
+                    return;
+                }
+
+                students[studentId] = {
+                    id: studentId,
+                    name: studentName,
+                    class: studentClass,
+                    photo: capturedImageData,
+                    createdAt: new Date().toISOString()
+                };
+
+                DB.saveStudents(students);
+
+                const descriptors = DB.getFaceDescriptors();
+                descriptors[studentId] = Array.from(descriptor);
+                DB.saveFaceDescriptors(descriptors);
+
+                hideLoading();
+                showStatus('addStudentStatus', `✓ Đã thêm học sinh: ${studentName}`, 'success');
+                
+                document.getElementById('studentId').value = '';
+                document.getElementById('studentName').value = '';
+                document.getElementById('studentClass').value = '';
+                capturedImageData = null;
+                document.getElementById('capturedImage').style.display = 'none';
+                document.getElementById('video2').style.display = 'block';
+                
+                updateStats();
+            } catch (error) {
+                hideLoading();
+                console.error('Error processing face:', error);
+                showStatus('addStudentStatus', 'Lỗi xử lý khuôn mặt: ' + error.message, 'error');
+            }
+        }
+
+        async function toggleRealtimeRecognition() {
+            const btn = document.getElementById('realtimeBtn');
+            
+            if (!videoStream) {
+                showStatus('attendanceStatus', 'Vui lòng bật camera trước!', 'error');
+                return;
+            }
+            
+            if (!faceApiModelsLoaded) {
+                const loaded = await loadFaceApiModels();
+                if (!loaded) return;
+            }
+            
+            const students = DB.getStudents();
+            if (Object.keys(students).length === 0) {
+                showStatus('attendanceStatus', 'Chưa có học sinh nào trong hệ thống!', 'error');
+                return;
+            }
+            
+            realtimeRecognition = !realtimeRecognition;
+            
+            if (realtimeRecognition) {
+                btn.textContent = '⏸️ Tắt nhận diện liên tục';
+                btn.style.background = '#dc3545';
+                startRealtimeRecognition();
+            } else {
+                btn.textContent = '🚀 Bật nhận diện liên tục';
+                btn.style.background = '#28a745';
+                stopRealtimeRecognition();
+            }
+        }
+
+        function startRealtimeRecognition() {
+            const statusDiv = document.getElementById('recognitionStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.textContent = '🔍 Đang quét...';
+            
+            recognitionInterval = setInterval(async () => {
+                if (!realtimeRecognition) return;
+                await performRealtimeRecognition();
+            }, 1000);
+        }
+
+        function stopRealtimeRecognition() {
+            if (recognitionInterval) {
+                clearInterval(recognitionInterval);
+                recognitionInterval = null;
+            }
+            
+            const canvas = document.getElementById('overlayCanvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            const statusDiv = document.getElementById('recognitionStatus');
+            statusDiv.style.display = 'none';
+            
+            lastRecognizedStudent = null;
+        }
+
+        async function performRealtimeRecognition() {
+            if (isRecognizing) return;
+            
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('overlayCanvas');
+            const ctx = canvas.getContext('2d');
+            const statusDiv = document.getElementById('recognitionStatus');
+            
+            isRecognizing = true;
+            
+            try {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const detection = await faceApi
+                    .detectSingleFace(video, new faceApi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+                
+                if (!detection) {
+                    statusDiv.textContent = '👤 Không thấy khuôn mặt';
+                    statusDiv.style.background = 'rgba(220, 53, 69, 0.8)';
+                    isRecognizing = false;
+                    return;
+                }
+                
+                const box = detection.detection.box;
+                ctx.strokeStyle = '#28a745';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(box.x, box.y, box.width, box.height);
+                
+                const currentDescriptor = detection.descriptor;
+                const descriptors = DB.getFaceDescriptors();
+                
+                let bestMatch = null;
+                let bestDistance = 0.6;
+                
+                for (const [studentId, storedDescriptor] of Object.entries(descriptors)) {
+                    const distance = faceApi.euclideanDistance(
+                        currentDescriptor,
+                        new Float32Array(storedDescriptor)
+                    );
+                    
+                    if (distance < bestDistance) {
+                        bestDistance = distance;
+                        bestMatch = studentId;
+                    }
+                }
+                
+                if (bestMatch) {
+                    const student = DB.getStudents()[bestMatch];
+                    const confidence = ((1 - bestDistance) * 100).toFixed(1);
+                    
+                    ctx.fillStyle = '#28a745';
+                    ctx.fillRect(box.x, box.y - 30, box.width, 30);
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.fillText(`${student.name} (${confidence}%)`, box.x + 5, box.y - 8);
+                    
+                    statusDiv.textContent = `✅ Nhận diện: ${student.name}`;
+                    statusDiv.style.background = 'rgba(40, 167, 69, 0.8)';
+                    
+                    const now = Date.now();
+                    if (lastRecognizedStudent !== best

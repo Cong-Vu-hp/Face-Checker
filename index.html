@@ -2,6 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+<<<<<<< HEAD
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,6 +12,10 @@
     <!-- Face-api.js for face recognition -->
     <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     
+=======
+    <meta name="viewport"="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Điểm danh Offline</title>
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
     <style>
         * {
             margin: 0;
@@ -111,11 +116,14 @@
             -webkit-transform: scaleX(-1);
         }
 
+<<<<<<< HEAD
         #overlayCanvas {
             transform: scaleX(-1);
             -webkit-transform: scaleX(-1);
         }
 
+=======
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
         .btn {
             width: 100%;
             padding: 15px;
@@ -172,6 +180,7 @@
             justify-content: center;
         }
 
+<<<<<<< HEAD
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -208,6 +217,8 @@
             100% { transform: rotate(360deg); }
         }
 
+=======
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
         .form-group {
             margin-bottom: 20px;
         }
@@ -341,6 +352,7 @@
             opacity: 0.9;
         }
 
+<<<<<<< HEAD
         #recognitionStatus {
             position: absolute;
             bottom: 10px;
@@ -355,6 +367,8 @@
             z-index: 100;
         }
 
+=======
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 20px;
@@ -399,6 +413,7 @@
                         <div class="stat-label">Đã điểm danh</div>
                     </div>
                 </div>
+<<<<<<< HEAD
                 <div class="camera-container" style="position: relative;">
                     <video id="video" autoplay playsinline></video>
                     <canvas id="overlayCanvas" style="position: absolute; top: 0; left: 0; pointer-events: none;"></canvas>
@@ -408,13 +423,26 @@
                 <div id="attendanceStatus"></div>
                 <button class="btn btn-primary" onclick="startCamera()">Bật Camera</button>
                 <button class="btn btn-success" id="realtimeBtn" onclick="toggleRealtimeRecognition()">🚀 Bật nhận diện liên tục</button>
+=======
+                <div class="camera-container">
+                    <video id="video" autoplay></video>
+                    <button class="btn-flip" onclick="flipCamera()" title="Chuyển camera">🔄</button>
+                </div>
+                <div id="attendanceStatus"></div>
+                <button class="btn btn-primary" onclick="startCamera()">Bật Camera</button>
+                <button class="btn btn-success" onclick="takeAttendance()">Điểm danh</button>
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
                 <button class="btn btn-warning" onclick="exportToCSV()">Xuất CSV</button>
             </div>
 
             <!-- Tab Thêm học sinh -->
             <div id="addStudent" class="tab-content">
                 <div class="camera-container">
+<<<<<<< HEAD
                     <video id="video2" autoplay playsinline></video>
+=======
+                    <video id="video2" autoplay></video>
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
                     <canvas id="canvas2" style="display:none;"></canvas>
                     <img id="capturedImage" class="preview-image" style="display:none;">
                     <button class="btn-flip" onclick="flipCamera2()" title="Chuyển camera">🔄</button>
@@ -459,6 +487,7 @@
         let currentFacingMode = 'user';
         let currentFacingMode2 = 'user';
         let capturedImageData = null;
+<<<<<<< HEAD
         let faceApiModelsLoaded = false;
         let isRecognizing = false;
         let realtimeRecognition = false;
@@ -467,6 +496,10 @@
         let lastRecognitionTime = 0;
 
         // Database functions
+=======
+
+        // Database functions sử dụng LocalStorage
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
         const DB = {
             getStudents() {
                 const data = localStorage.getItem('students');
@@ -484,6 +517,7 @@
             
             saveAttendance(attendance) {
                 localStorage.setItem('attendance', JSON.stringify(attendance));
+<<<<<<< HEAD
             },
             
             getFaceDescriptors() {
@@ -548,6 +582,11 @@
             return detection ? detection.descriptor : null;
         }
 
+=======
+            }
+        };
+
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
         function switchTab(tabName) {
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -555,11 +594,14 @@
             event.target.classList.add('active');
             document.getElementById(tabName).classList.add('active');
 
+<<<<<<< HEAD
             // Stop realtime recognition when switching tabs
             if (realtimeRecognition && tabName !== 'attendance') {
                 toggleRealtimeRecognition();
             }
 
+=======
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
             if (tabName === 'manage') {
                 loadStudentList();
             } else if (tabName === 'history') {
@@ -575,6 +617,10 @@
                     videoStream.getTracks().forEach(track => track.stop());
                 }
                 
+<<<<<<< HEAD
+=======
+                // Yêu cầu quyền truy cập camera
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
                 const constraints = {
                     video: {
                         facingMode: currentFacingMode,
@@ -588,6 +634,7 @@
                 const videoElement = document.getElementById('video');
                 videoElement.srcObject = videoStream;
                 
+<<<<<<< HEAD
                 await videoElement.play();
                 
                 videoElement.addEventListener('loadedmetadata', () => {
@@ -596,12 +643,44 @@
                         canvas.width = videoElement.videoWidth;
                         canvas.height = videoElement.videoHeight;
                     }
+=======
+                // Đảm bảo video được play
+                videoElement.play().catch(err => {
+                    console.log('Video play error:', err);
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
                 });
                 
                 showStatus('attendanceStatus', '✓ Camera đã bật thành công', 'success');
             } catch (error) {
                 console.error('Camera error:', error);
+<<<<<<< HEAD
                 showStatus('attendanceStatus', 'Không thể truy cập camera: ' + error.message, 'error');
+=======
+                let errorMsg = 'Không thể truy cập camera. ';
+                
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    errorMsg += 'Vui lòng cấp quyền truy cập camera trong cài đặt trình duyệt.';
+                } else if (error.name === 'NotFoundError') {
+                    errorMsg += 'Không tìm thấy camera trên thiết bị.';
+                } else if (error.name === 'NotReadableError') {
+                    errorMsg += 'Camera đang được sử dụng bởi ứng dụng khác.';
+                } else {
+                    errorMsg += error.message;
+                }
+                
+                showStatus('attendanceStatus', errorMsg, 'error');
+                
+                // Hiển thị hướng dẫn chi tiết
+                setTimeout(() => {
+                    showStatus('attendanceStatus', 
+                        '📱 Hướng dẫn cấp quyền:\n' +
+                        '1. Nhấn vào icon khóa/thông tin bên trái thanh địa chỉ\n' +
+                        '2. Tìm mục "Camera" và chọn "Cho phép"\n' +
+                        '3. Tải lại trang và thử lại', 
+                        'error'
+                    );
+                }, 6000);
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
             }
         }
 
@@ -625,13 +704,45 @@
                 videoElement.srcObject = videoStream2;
                 videoElement.style.display = 'block';
                 
+<<<<<<< HEAD
                 await videoElement.play();
+=======
+                videoElement.play().catch(err => {
+                    console.log('Video play error:', err);
+                });
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
                 
                 document.getElementById('capturedImage').style.display = 'none';
                 showStatus('addStudentStatus', '✓ Camera đã bật thành công', 'success');
             } catch (error) {
                 console.error('Camera error:', error);
+<<<<<<< HEAD
                 showStatus('addStudentStatus', 'Không thể truy cập camera: ' + error.message, 'error');
+=======
+                let errorMsg = 'Không thể truy cập camera. ';
+                
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    errorMsg += 'Vui lòng cấp quyền truy cập camera trong cài đặt trình duyệt.';
+                } else if (error.name === 'NotFoundError') {
+                    errorMsg += 'Không tìm thấy camera trên thiết bị.';
+                } else if (error.name === 'NotReadableError') {
+                    errorMsg += 'Camera đang được sử dụng bởi ứng dụng khác.';
+                } else {
+                    errorMsg += error.message;
+                }
+                
+                showStatus('addStudentStatus', errorMsg, 'error');
+                
+                setTimeout(() => {
+                    showStatus('addStudentStatus', 
+                        '📱 Hướng dẫn cấp quyền:\n' +
+                        '1. Nhấn vào icon khóa/thông tin bên trái thanh địa chỉ\n' +
+                        '2. Tìm mục "Camera" và chọn "Cho phép"\n' +
+                        '3. Tải lại trang và thử lại', 
+                        'error'
+                    );
+                }, 6000);
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
             }
         }
 
@@ -653,10 +764,18 @@
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             
+<<<<<<< HEAD
             context.translate(canvas.width, 0);
             context.scale(-1, 1);
             context.drawImage(video, 0, 0);
             context.setTransform(1, 0, 0, 1, 0, 0);
+=======
+            // Lật ngược ảnh để match với video đã mirror
+            context.translate(canvas.width, 0);
+            context.scale(-1, 1);
+            context.drawImage(video, 0, 0);
+            context.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
 
             capturedImageData = canvas.toDataURL('image/jpeg', 0.8);
             
@@ -667,7 +786,11 @@
             showStatus('addStudentStatus', '✓ Đã chụp ảnh thành công', 'success');
         }
 
+<<<<<<< HEAD
         async function saveStudent() {
+=======
+        function saveStudent() {
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
             const studentId = document.getElementById('studentId').value.trim();
             const studentName = document.getElementById('studentName').value.trim();
             const studentClass = document.getElementById('studentClass').value.trim();
@@ -689,6 +812,7 @@
                 return;
             }
 
+<<<<<<< HEAD
             if (!faceApiModelsLoaded) {
                 const loaded = await loadFaceApiModels();
                 if (!loaded) return;
@@ -868,3 +992,390 @@
                     
                     const now = Date.now();
                     if (lastRecognizedStudent !== best
+=======
+            students[studentId] = {
+                id: studentId,
+                name: studentName,
+                class: studentClass,
+                photo: capturedImageData,
+                createdAt: new Date().toISOString()
+            };
+
+            DB.saveStudents(students);
+
+            showStatus('addStudentStatus', `✓ Đã thêm học sinh: ${studentName}`, 'success');
+            
+            // Reset form
+            document.getElementById('studentId').value = '';
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentClass').value = '';
+            capturedImageData = null;
+            document.getElementById('capturedImage').style.display = 'none';
+            document.getElementById('video2').style.display = 'block';
+            
+            updateStats();
+        }
+
+        function takeAttendance() {
+            const video = document.getElementById('video');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            // Lật ngược ảnh để match với video đã mirror
+            context.translate(canvas.width, 0);
+            context.scale(-1, 1);
+            context.drawImage(video, 0, 0);
+            context.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+
+            const currentImageData = canvas.toDataURL('image/jpeg', 0.8);
+
+            // Tìm học sinh khớp bằng cách so sánh ảnh
+            const students = DB.getStudents();
+            let foundStudent = null;
+
+            // Giải pháp đơn giản: cho phép chọn học sinh từ danh sách
+            const studentKeys = Object.keys(students);
+            
+            if (studentKeys.length === 0) {
+                showStatus('attendanceStatus', 'Chưa có học sinh nào trong hệ thống', 'error');
+                return;
+            }
+
+            // Hiển thị danh sách để chọn (vì nhận diện khuôn mặt cần thư viện phức tạp)
+            const studentId = prompt('Nhập mã học sinh để điểm danh:\n\n' + 
+                studentKeys.map(id => `${id} - ${students[id].name}`).join('\n'));
+
+            if (!studentId || !students[studentId]) {
+                showStatus('attendanceStatus', 'Không tìm thấy học sinh', 'error');
+                return;
+            }
+
+            foundStudent = students[studentId];
+
+            const attendance = DB.getAttendance();
+            const today = new Date().toLocaleDateString('vi-VN');
+            
+            // Kiểm tra đã điểm danh chưa
+            const alreadyMarked = attendance.some(
+                record => record.studentId === foundStudent.id && record.date === today
+            );
+
+            if (alreadyMarked) {
+                showStatus('attendanceStatus', `${foundStudent.name} đã điểm danh hôm nay rồi`, 'error');
+                return;
+            }
+
+            // Thêm bản ghi điểm danh
+            attendance.push({
+                studentId: foundStudent.id,
+                studentName: foundStudent.name,
+                studentClass: foundStudent.class,
+                date: today,
+                time: new Date().toLocaleTimeString('vi-VN'),
+                timestamp: new Date().toISOString(),
+                photo: currentImageData
+            });
+
+            DB.saveAttendance(attendance);
+
+            showStatus('attendanceStatus', 
+                `✓ Điểm danh thành công: ${foundStudent.name} (${foundStudent.id})`, 
+                'success');
+            
+            updateStats();
+        }
+
+        function loadStudentList() {
+            const students = DB.getStudents();
+            const studentList = document.getElementById('studentList');
+
+            if (Object.keys(students).length === 0) {
+                studentList.innerHTML = '<p style="text-align:center;color:#6c757d;">Chưa có học sinh nào</p>';
+                return;
+            }
+
+            const listHtml = Object.values(students).map(student => `
+                <div class="student-item">
+                    <div class="student-info">
+                        <div class="student-name">${student.name}</div>
+                        <div class="student-id">Mã: ${student.id} | Lớp: ${student.class}</div>
+                    </div>
+                    <button class="btn-delete" onclick="deleteStudent('${student.id}')">Xóa</button>
+                </div>
+            `).join('');
+
+            studentList.innerHTML = listHtml;
+        }
+
+        function deleteStudent(studentId) {
+            if (!confirm('Bạn có chắc muốn xóa học sinh này?')) return;
+
+            const students = DB.getStudents();
+            delete students[studentId];
+            DB.saveStudents(students);
+
+            loadStudentList();
+            updateStats();
+        }
+
+        function loadAttendanceHistory() {
+            const attendance = DB.getAttendance();
+            const today = new Date().toLocaleDateString('vi-VN');
+            const historyDiv = document.getElementById('attendanceHistory');
+
+            const todayRecords = attendance.filter(record => record.date === today);
+
+            if (todayRecords.length === 0) {
+                historyDiv.innerHTML = '<p style="text-align:center;color:#6c757d;">Chưa có bản ghi nào hôm nay</p>';
+                return;
+            }
+
+            const historyHtml = todayRecords.map(record => `
+                <div class="attendance-record">
+                    <div class="student-name">${record.studentName} (${record.studentId})</div>
+                    <div class="student-id">Lớp: ${record.studentClass}</div>
+                    <div class="attendance-time">⏰ ${record.time}</div>
+                </div>
+            `).join('');
+
+            historyDiv.innerHTML = historyHtml;
+        }
+
+        function updateStats() {
+            const students = DB.getStudents();
+            const attendance = DB.getAttendance();
+            const today = new Date().toLocaleDateString('vi-VN');
+
+            const totalStudents = Object.keys(students).length;
+            const todayAttendance = attendance.filter(record => record.date === today).length;
+
+            document.getElementById('totalStudents').textContent = totalStudents;
+            document.getElementById('todayAttendance').textContent = todayAttendance;
+        }
+
+        function exportToCSV() {
+            const attendance = DB.getAttendance();
+            const today = new Date().toLocaleDateString('vi-VN');
+            const todayRecords = attendance.filter(record => record.date === today);
+
+            if (todayRecords.length === 0) {
+                alert('Không có dữ liệu điểm danh hôm nay');
+                return;
+            }
+
+            let csv = 'STT,Mã học sinh,Họ và tên,Lớp,Ngày,Giờ\n';
+            
+            todayRecords.forEach((record, index) => {
+                csv += `${index + 1},${record.studentId},${record.studentName},${record.studentClass},${record.date},${record.time}\n`;
+            });
+
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `diem_danh_${today.replace(/\//g, '-')}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showStatus('attendanceStatus', '✓ Đã xuất file CSV thành công', 'success');
+        }
+
+        function clearAllData() {
+            if (!confirm('⚠️ CẢNH BÁO: Bạn có chắc muốn xóa TOÀN BỘ dữ liệu?\n\nĐiều này sẽ xóa:\n- Tất cả học sinh\n- Tất cả lịch sử điểm danh\n\nHành động này KHÔNG THỂ hoàn tác!')) {
+                return;
+            }
+
+            if (!confirm('Xác nhận lần cuối: Xóa toàn bộ dữ liệu?')) {
+                return;
+            }
+
+            localStorage.clear();
+            alert('✓ Đã xóa toàn bộ dữ liệu');
+            
+            loadStudentList();
+            loadAttendanceHistory();
+            updateStats();
+        }
+
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 5000);
+        }
+
+        // Khởi tạo khi load trang
+        window.onload = async function() {
+            updateStats();
+            
+            // Kiểm tra hỗ trợ camera
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('⚠️ Trình duyệt của bạn không hỗ trợ camera.\n\nVui lòng sử dụng Chrome, Firefox, Safari hoặc Edge phiên bản mới nhất.');
+                return;
+            }
+            
+            // Kiểm tra HTTPS (bắt buộc trên một số trình duyệt)
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                console.warn('⚠️ Camera có thể không hoạt động trên HTTP. Nên sử dụng HTTPS.');
+            }
+            
+            // YÊU CẦU QUYỀN CAMERA NGAY KHI VÀO TRANG
+            try {
+                showPermissionDialog();
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'user' },
+                    audio: false
+                });
+                
+                // Dừng stream sau khi xin quyền (chỉ xin quyền thôi)
+                stream.getTracks().forEach(track => track.stop());
+                
+                hidePermissionDialog();
+                showWelcomeMessage();
+            } catch (error) {
+                hidePermissionDialog();
+                showPermissionError(error);
+            }
+        };
+        
+        function showPermissionDialog() {
+            const dialogHtml = `
+                <div id="permissionDialog" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">📷</div>
+                        <h2 style="color: #667eea; margin-bottom: 15px;">Cấp quyền Camera</h2>
+                        <p style="color: #666; margin-bottom: 20px;">Ứng dụng cần quyền truy cập camera để chụp ảnh học sinh và điểm danh.</p>
+                        <div style="display: inline-block; padding: 10px 20px; background: #f0f0f0; border-radius: 8px;">
+                            <div style="font-size: 24px; animation: spin 1s linear infinite;">⏳</div>
+                            <p style="margin-top: 10px; color: #666;">Đang xin quyền...</p>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', dialogHtml);
+        }
+        
+        function hidePermissionDialog() {
+            const dialog = document.getElementById('permissionDialog');
+            if (dialog) {
+                dialog.remove();
+            }
+        }
+        
+        function showWelcomeMessage() {
+            const welcomeHtml = `
+                <div id="welcomeMessage" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 15px 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 9999; animation: slideDown 0.3s ease;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 24px;">✅</span>
+                        <div>
+                            <strong>Quyền camera đã được cấp!</strong>
+                            <div style="font-size: 12px; opacity: 0.9; margin-top: 3px;">Bạn có thể sử dụng đầy đủ tính năng</div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    @keyframes slideDown {
+                        from {
+                            top: -100px;
+                            opacity: 0;
+                        }
+                        to {
+                            top: 20px;
+                            opacity: 1;
+                        }
+                    }
+                </style>
+            `;
+            document.body.insertAdjacentHTML('beforeend', welcomeHtml);
+            
+            setTimeout(() => {
+                const msg = document.getElementById('welcomeMessage');
+                if (msg) {
+                    msg.style.animation = 'slideUp 0.3s ease';
+                    setTimeout(() => msg.remove(), 300);
+                }
+            }, 3000);
+        }
+        
+        function showPermissionError(error) {
+            let errorTitle = 'Không thể truy cập camera';
+            let errorMessage = '';
+            let instructions = '';
+            
+            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                errorMessage = 'Bạn đã từ chối quyền truy cập camera.';
+                instructions = `
+                    <strong style="color: #dc3545;">Cách cấp quyền:</strong><br><br>
+                    <div style="text-align: left; padding: 0 20px;">
+                        <strong>📱 Chrome Android:</strong><br>
+                        1. Nhấn vào <strong>icon khóa</strong> (🔒) trên thanh địa chỉ<br>
+                        2. Chọn <strong>"Quyền"</strong> hoặc <strong>"Cài đặt trang web"</strong><br>
+                        3. Tìm <strong>"Camera"</strong> → Chọn <strong>"Cho phép"</strong><br>
+                        4. Tải lại trang (F5)<br><br>
+                        
+                        <strong>🍎 Safari iOS:</strong><br>
+                        1. Vào <strong>Cài đặt</strong> → <strong>Safari</strong><br>
+                        2. Tìm <strong>"Camera"</strong> → Chọn <strong>"Hỏi"</strong> hoặc <strong>"Cho phép"</strong><br>
+                        3. Tải lại trang<br><br>
+                        
+                        <strong>🦊 Firefox:</strong><br>
+                        1. Nhấn vào <strong>icon khóa</strong> (🔒)<br>
+                        2. Chọn <strong>"Quyền"</strong><br>
+                        3. Bật <strong>"Camera"</strong> ON<br>
+                        4. Tải lại trang
+                    </div>
+                `;
+            } else if (error.name === 'NotFoundError') {
+                errorMessage = 'Không tìm thấy camera trên thiết bị.';
+                instructions = 'Vui lòng kiểm tra xem thiết bị có camera không hoặc thử trình duyệt khác.';
+            } else if (error.name === 'NotReadableError') {
+                errorMessage = 'Camera đang được sử dụng bởi ứng dụng khác.';
+                instructions = 'Vui lòng đóng các ứng dụng khác đang dùng camera và tải lại trang.';
+            } else {
+                errorMessage = error.message;
+                instructions = 'Vui lòng kiểm tra cài đặt trình duyệt và thử lại.';
+            }
+            
+            const errorHtml = `
+                <div id="permissionError" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
+                    <div style="background: white; padding: 30px; border-radius: 15px; max-width: 500px; max-height: 90vh; overflow-y: auto;">
+                        <div style="font-size: 48px; margin-bottom: 15px; text-align: center;">⚠️</div>
+                        <h2 style="color: #dc3545; margin-bottom: 15px; text-align: center;">${errorTitle}</h2>
+                        <p style="color: #666; margin-bottom: 20px; text-align: center;">${errorMessage}</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; line-height: 1.8; font-size: 14px;">
+                            ${instructions}
+                        </div>
+                        <div style="text-align: center;">
+                            <button onclick="location.reload()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-right: 10px;">
+                                🔄 Tải lại trang
+                            </button>
+                            <button onclick="document.getElementById('permissionError').remove()" style="background: #6c757d; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                                ⏭️ Bỏ qua (dùng sau)
+                            </button>
+                        </div>
+                        <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 5px; font-size: 13px; color: #856404;">
+                            <strong>💡 Mẹo:</strong> Bạn vẫn có thể sử dụng tính năng "Chọn ảnh từ thư viện" nếu camera không hoạt động.
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', errorHtml);
+        }
+    </script>
+</body>
+</html>
+>>>>>>> d32e04e2f799749fc2269d925a5850de9f078f61
